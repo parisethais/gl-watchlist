@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GL Tailandês · Watchlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120E;
+    --surface:#1E1A14;
+    --surface-2:#241F18;
+    --text:#F4F0E8;
+    --muted:#A99E8B;
+    --faint:#6E6656;
+    --amber:#E8A33D;
+    --amber-dim:#8A6B2E;
+    --line:#2C271F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;background:var(--bg)}
+  body{
+    font-family:'Poppins',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.45;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    background:var(--bg);
+    min-height:100vh;
+    max-width:660px;margin:0 auto;
+    padding:28px 18px calc(52px + env(safe-area-inset-bottom));
+  }
+
+  /* Header */
+  .eyebrow{
+    font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--amber);margin-bottom:10px;
+  }
+  h1{
+    font-weight:700;font-size:30px;line-height:1.08;letter-spacing:-.01em;margin-bottom:6px;
+  }
+  h1 .k{color:var(--amber)}
+  .sub{color:var(--muted);font-size:13.5px;font-weight:400;max-width:44ch}
+
+  /* Progress */
+  .progress-wrap{margin:22px 0 30px}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .progress-count{font-size:13px;font-weight:500;color:var(--muted)}
+  .progress-count b{color:var(--text);font-weight:600}
+  .progress-pct{font-size:12px;font-weight:600;color:var(--amber);font-variant-numeric:tabular-nums}
+  .track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+  .bar{height:100%;width:0;background:var(--amber);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+
+  /* Section */
+  .section-label{
+    display:flex;align-items:center;gap:12px;
+    font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--faint);margin:34px 0 16px;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* Ship block */
+  .ship{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 16px 8px;
+    margin-bottom:14px;
+  }
+  .ship-name{font-weight:700;font-size:17px;color:var(--amber);letter-spacing:-.01em}
+  .pair{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    color:var(--muted);font-size:12.5px;font-weight:400;margin-top:3px;
+  }
+  .pair .link{color:var(--amber-dim);font-weight:600}
+
+  /* Series row (the checkable unit) */
+  .series{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:12px 4px;border-top:1px solid var(--line);margin-top:12px;
+    cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  .series:first-of-type{margin-top:14px}
+  .box{
+    flex:none;width:22px;height:22px;margin-top:1px;border-radius:7px;
+    border:1.5px solid var(--amber-dim);background:transparent;
+    display:grid;place-items:center;transition:background .18s,border-color .18s;
+  }
+  .box svg{width:13px;height:13px;stroke:var(--bg);stroke-width:3.2;fill:none;
+    stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.5);
+    transition:opacity .18s,transform .2s cubic-bezier(.34,1.56,.64,1)}
+  .series-body{flex:1;min-width:0}
+  .series-title{font-size:14.5px;font-weight:500;letter-spacing:-.005em}
+  .series-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px}
+  .year{font-size:11.5px;color:var(--faint);font-weight:500;font-variant-numeric:tabular-nums}
+  .tag{
+    font-size:10.5px;font-weight:600;letter-spacing:.02em;
+    padding:2px 7px;border-radius:99px;border:1px solid var(--line);color:var(--muted);
+  }
+  .tag.rating{color:var(--amber);border-color:var(--amber-dim)}
+  .tag.pioneer{color:var(--muted)}
+  .tag.soon{color:var(--amber);border-color:var(--amber-dim);border-style:dashed}
+
+  /* Checked state */
+  .series.done .box{background:var(--amber);border-color:var(--amber)}
+  .series.done .box svg{opacity:1;transform:scale(1)}
+  .series.done .series-title{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--amber-dim)}
+
+  footer{margin-top:34px;color:var(--faint);font-size:11.5px;line-height:1.6;text-align:center}
+  footer .dot{color:var(--amber-dim)}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Firm Collective · watchlist</div>
+    <h1>GL <span class="k">tailandês</span></h1>
+    <p class="sub">Os ships e séries que a gente levantou, mais umas bem avaliadas pra conhecer. Toca pra marcar conforme for vendo.</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-count"><b id="done">0</b> de <span id="total">0</span> séries assistidas</span>
+      <span class="progress-pct" id="pct">0%</span>
+    </div>
+    <div class="track"><div class="bar" id="bar"></div></div>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    Notas do MyDramaList <span class="dot">·</span> nomes completos servem pra achar as contas certas no X
+  </footer>
+
+</div>
+<script>
+const DATA = [
+  { group:"Da nossa conversa", ships:[
+    { ship:"LenaMiu", a:"Lena Lorena Schuett", b:"Miu Natsha Taechamongkalapiwat",
+      series:[
+        {id:"msz", t:"My Safe Zone", y:"2025", rating:"7.9"},
+        {id:"pls", t:"Pls.Love", tag:"em breve"}
+      ] },
+    { ship:"GinJay", a:"Ginny Natnicha Pratipnatsiri", b:"Jayna Angelina Stevens",
+      series:[
+        {id:"pl", t:"Poisonous Love", y:"2025", rating:"8.3"},
+        {id:"lun", t:"Lunar Secret", tag:"em breve"}
+      ] },
+    { ship:"JanJingJing", a:"Jan Ployshompoo Supasap", b:"JingJing Prariyapit Yu",
+      series:[
+        {id:"ewb", t:"Enemies with Benefits", y:"2026", rating:"8.6"},
+        {id:"mtl", t:"MuTeLuv: \u201CHello, Is This Luck?\u201D", y:"2025", rating:"7.6", tag:"coletânea"}
+      ] },
+    { ship:"TKNur", a:"Tangkwa Phinyanech Aungsuwan", b:"Nur Desoraya Techapaibul",
+      series:[{id:"dq", t:"Dangerous Queen", y:"2025", rating:"7.7"}] },
+    { ship:"FreenBecky", a:"Freen Sarocha Chankimha", b:"Becky Rebecca Patricia Armstrong",
+      series:[
+        {id:"gap", t:"GAP", y:"2022", rating:"7.7", pioneer:"a pioneira"},
+        {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4"},
+        {id:"ura", t:"Uranus2324", y:"2024", rating:"7.7", tag:"filme"},
+        {id:"air", t:"The Air", y:"2026", rating:"8.3", tag:"elementos"},
+        {id:"cra", t:"Cranium", tag:"em breve"}
+      ] },
+    { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
+      series:[
+        {id:"pet", t:"Petrichor", y:"2024", rating:"8.3"},
+        {id:"petu", t:"Petrichor: Uncut", y:"2024", rating:"8.1", tag:"18+"},
+        {id:"wat", t:"The Water", y:"2026", rating:"8.3", tag:"elementos"},
+        {id:"unl", t:"Unlimited Love", y:"2025", rating:"6.9"},
+        {id:"sml", t:"Show Me Love", y:"2023", rating:"6.7", tag:"coletânea"},
+        {id:"cfb", t:"Club Friday: Love Bully", y:"2024", rating:"7.4", tag:"arco"}
+      ] },
+    { ship:"NamFilm", a:"Namtan Tipnaree Weerawatnodom", b:"Film Rachanun Mahawan",
+      series:[{id:"plu", t:"Pluto", y:"2024", rating:"8.5"}] },
+    { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
+      series:[
+        {id:"aff", t:"Affair", y:"2024", rating:"8.2"},
+        {id:"hs", t:"Harmony Secret", y:"2025", rating:"8.2"},
+        {id:"hr", t:"Hometown Romance", y:"2026", rating:"8.5"}
+      ] },
+  ]},
+  { group:"Aclamadas · pra conhecer", ships:[
+    { ship:"LingOrm", a:"Lingling Sirilak Kwong", b:"Orm Kornnaphat Sethratanapong",
+      series:[{id:"sou", t:"The Secret of Us", y:"2024", rating:"8.1"}] },
+    { ship:"MilkLove", a:"Milk Pansa Vosbein", b:"Love Pattranite Limpatiyakorn",
+      series:[
+        {id:"235", t:"23.5", y:"2024", rating:"7.7"},
+        {id:"whl", t:"Whale Store xoxo", y:"2025", rating:"8.1"},
+        {id:"moz", t:"Magic of Zero", y:"2022", rating:"7.2"}
+      ] },
+    { ship:"Christine \u0026 Mae", a:"Christine Gulasatree Michalsky", b:"Mae Methakarn Anektanasuwan",
+      series:[{id:"r4u", t:"Reverse 4 You", y:"2024", rating:"7.7"}] },
+  ]},
+  { group:"Descobertas depois", ships:[
+    { ship:"Pundao \u0026 Shelly", a:"Aom Pundao Panyabaramee", b:"Shelly Phetsai Chanrueang",
+      series:[
+        {id:"rc", t:"Roller Coaster", y:"2025", rating:"8.2"},
+        {id:"bys", t:"By Your Side", tag:"em breve"}
+      ] },
+    { ship:"EmiBonnie", a:"Emi Thasorn Klinnium", b:"Bonnie Pattraphus Borattasuwan",
+      series:[
+        {id:"us", t:"Us", y:"2025", rating:"8.4"},
+        {id:"moon", t:"Moonshadow", tag:"em breve"}
+      ] },
+    { ship:"FayeYoko", a:"Faye Peraya Malisorn", b:"Yoko Apasra Lertprasert",
+      series:[
+        {id:"blk", t:"Blank: The Series", y:"2023", tag:"maduras"},
+        {id:"blk2", t:"Blank Season 2", y:"2024", rating:"8.1"}
+      ] },
+    { ship:"JaneNano", a:"Puyfai Tharathip Baisaeng", b:"Ploy Jhutamas Pakonworrawong",
+      series:[
+        {id:"shd", t:"Shades", y:"2026", rating:"8.5", tag:"18+"},
+        {id:"shd2", t:"Shades Part 2", y:"2026", tag:"18+"}
+      ] },
+    { ship:"BamOom", a:"Bam Saralee Prasitdumrong", b:"Oom Eisaya Hosuwan",
+      series:[{id:"ful", t:"Fulfill", y:"2026", rating:"7.8"}] },
+  ]},
+];
+
+const KEY = "gl_watchlist_v1";
+let state = {};
+
+const CHECK = '<svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"></polyline></svg>';
+
+function render(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  let total = 0;
+  DATA.forEach(section => {
+    const lbl = document.createElement('div');
+    lbl.className = 'section-label';
+    lbl.textContent = section.group;
+    list.appendChild(lbl);
+
+    section.ships.forEach(s => {
+      const block = document.createElement('div');
+      block.className = 'ship';
+      let html = `<div class="ship-name">${s.ship}</div>
+        <div class="pair">${s.a} <span class="link">&#8760;</span> ${s.b}</div>`;
+      s.series.forEach(se => {
+        total++;
+        const done = !!state[se.id];
+        let tags = '';
+        if(se.y) tags += `<span class="year">${se.y}</span>`;
+        if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
+        if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
+        if(se.tag) tags += `<span class="tag${se.tag==='em breve'?' soon':''}">${se.tag}</span>`;
+        html += `<div class="series${done?' done':''}" data-id="${se.id}" role="button" tabindex="0" aria-pressed="${done}">
+            <div class="box">${CHECK}</div>
+            <div class="series-body">
+              <div class="series-title">${se.t}</div>
+              <div class="series-meta">${tags}</div>
+            </div>
+          </div>`;
+      });
+      block.innerHTML = html;
+      list.appendChild(block);
+    });
+  });
+  document.getElementById('total').textContent = total;
+  updateProgress(total);
+
+  document.querySelectorAll('.series').forEach(el=>{
+    el.addEventListener('click', ()=>toggle(el));
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(el);}
+    });
+  });
+}
+
+function toggle(el){
+  const id = el.dataset.id;
+  state[id] = !state[id];
+  el.classList.toggle('done', state[id]);
+  el.setAttribute('aria-pressed', state[id]);
+  const total = document.querySelectorAll('.series').length;
+  updateProgress(total);
+  save();
+}
+
+function updateProgress(total){
+  const done = Object.values(state).filter(Boolean).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('done').textContent = done;
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+}
+
+// Detecta o melhor jeito de salvar: localStorage (quando hospedado/aberto no
+// navegador) ou window.storage (dentro do preview do Claude).
+let backend = 'local';
+try { localStorage.setItem('_glt','1'); localStorage.removeItem('_glt'); }
+catch(e){ backend = 'cloud'; }
+
+async function save(){
+  const val = JSON.stringify(state);
+  if(backend === 'local'){
+    try { localStorage.setItem(KEY, val); } catch(e){}
+  } else {
+    try { await window.storage.set(KEY, val); } catch(e){}
+  }
+}
+async function load(){
+  if(backend === 'local'){
+    try { const v = localStorage.getItem(KEY); if(v) state = JSON.parse(v); } catch(e){}
+  } else {
+    try { const r = await window.storage.get(KEY); if(r && r.value) state = JSON.parse(r.value); }
+    catch(e){}
+  }
+  render();
+}
+
+load();
+</script>
+</body>
+</html>
