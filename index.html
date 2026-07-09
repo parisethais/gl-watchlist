@@ -165,16 +165,14 @@ const DATA = [
     { ship:"FreenBecky", a:"Freen Sarocha Chankimha", b:"Becky Rebecca Patricia Armstrong",
       series:[
         {id:"gap", t:"GAP", y:"2022", rating:"7.7", pioneer:"a pioneira"},
-        {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4"},
-        {id:"pinu", t:"The Loyal Pin: Uncut", y:"2024", rating:"8.4", tag:"uncut"},
+        {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4", uncut:true},
         {id:"ura", t:"Uranus2324", y:"2024", rating:"7.7", tag:"filme"},
         {id:"air", t:"The Air", y:"2026", rating:"8.3", tag:"elementos"},
         {id:"cra", t:"Cranium", tag:"em breve"}
       ] },
     { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
       series:[
-        {id:"pet", t:"Petrichor", y:"2024", rating:"8.3"},
-        {id:"petu", t:"Petrichor: Uncut", y:"2024", rating:"8.1", tag:"18+"},
+        {id:"pet", t:"Petrichor", y:"2024", rating:"8.3", uncut:"18+"},
         {id:"wat", t:"The Water", y:"2026", rating:"8.3", tag:"elementos"},
         {id:"unl", t:"Unlimited Love", y:"2025", rating:"6.9"},
         {id:"sml", t:"Show Me Love", y:"2023", rating:"6.7", tag:"coletânea"}
@@ -183,8 +181,7 @@ const DATA = [
       series:[{id:"plu", t:"Pluto", y:"2024", rating:"8.5"}] },
     { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
       series:[
-        {id:"aff", t:"Affair", y:"2024", rating:"8.2"},
-        {id:"affu", t:"Affair: Uncensored", y:"2024", rating:"8.0", tag:"uncut"},
+        {id:"aff", t:"Affair", y:"2024", rating:"8.2", uncut:true},
         {id:"hs", t:"Harmony Secret", y:"2025", rating:"8.2"},
         {id:"hr", t:"Hometown Romance", y:"2026", rating:"8.5"}
       ] },
@@ -209,8 +206,7 @@ const DATA = [
       ] },
     { ship:"EmiBonnie", a:"Emi Thasorn Klinnium", b:"Bonnie Pattraphus Borattasuwan",
       series:[
-        {id:"us", t:"Us", y:"2025", rating:"8.4"},
-        {id:"usu", t:"Us: Uncut Version", y:"2025", rating:"8.3", tag:"uncut"},
+        {id:"us", t:"Us", y:"2025", rating:"8.4", uncut:true},
         {id:"moon", t:"Moonshadow", tag:"em breve"}
       ] },
     { ship:"FayeYoko", a:"Faye Peraya Malisorn", b:"Yoko Apasra Lertprasert",
@@ -229,8 +225,7 @@ const DATA = [
       series:[{id:"ssh", t:"Somewhere Somehow", y:"2025", rating:"8.3"}] },
     { ship:"KaoJane", a:"Kao Supassrathip Akkrathaweepatch", b:"Jane Methika Jiranorraphat",
       series:[
-        {id:"ld", t:"Love Design", y:"2025", rating:"8.4"},
-        {id:"ldu", t:"Love Design (Uncut Ver.)", y:"2025", rating:"8.5", tag:"uncut"},
+        {id:"ld", t:"Love Design", y:"2025", rating:"8.4", uncut:true},
         {id:"lds", t:"Love Design: Special", y:"2025", rating:"8.3", tag:"especial"}
       ] },
   ]},
@@ -269,7 +264,8 @@ function render(){
         if(se.y) tags += `<span class="year">${se.y}</span>`;
         if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
         if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
-        if(se.tag) tags += `<span class="tag${se.tag==='em breve'?' soon':''}${se.tag==='uncut'?' uncut':''}">${se.tag}</span>`;
+        if(se.tag) tags += `<span class="tag${se.tag==='em breve'?' soon':''}">${se.tag}</span>`;
+        if(se.uncut) tags += `<span class="tag uncut">tem uncut${se.uncut===true?'':' · '+se.uncut}</span>`;
         html += `<div class="series${done?' done':''}" data-id="${se.id}" role="button" tabindex="0" aria-pressed="${done}">
             <div class="box">${CHECK}</div>
             <div class="series-body">
