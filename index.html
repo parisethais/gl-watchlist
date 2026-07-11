@@ -186,7 +186,6 @@ const DATA = [
   { ship:"NamFilm", a:"Namtan Tipnaree Weerawatnodom", b:"Film Rachanun Mahawan",
     series:[
       {id:"plu", t:"Pluto", y:"2024", rating:"8.5"},
-      {id:"grnf", t:"Girl Rules", y:"2026", rating:"7.8", tag:"multi-casal"},
       {id:"her", t:"Her", tag:"em breve"}
     ] },
   { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
@@ -211,7 +210,6 @@ const DATA = [
       {id:"235", t:"23.5", y:"2024", rating:"7.7"},
       {id:"whl", t:"Whale Store xoxo", y:"2025", rating:"8.1"},
       {id:"moz", t:"Magic of Zero", y:"2022", rating:"7.2"},
-      {id:"grml", t:"Girl Rules", y:"2026", rating:"7.8", tag:"multi-casal"},
       {id:"dit", t:"Ditto", tag:"em breve"}
     ] },
   { ship:"Christine & Mae", a:"Christine Gulasatree Michalsky", b:"Mae Methakarn Anektanasuwan",
@@ -242,6 +240,8 @@ const DATA = [
     series:[{id:"ful", t:"Fulfill", y:"2026", rating:"7.8"}] },
   { ship:"NileNamwan", a:"Nile Chanidapa Sommitthanakul", b:"Namwan Natchaya Vongbut",
     series:[{id:"chl", t:"Chasing Love", y:"2026", tag:"no ar"}] },
+  { ship:"Girl Rules", a:"NamtanFilm · MilkLove · ViewMim",
+    series:[{id:"gr", t:"Girl Rules", y:"2026", rating:"7.8", tag:"multi-casal"}] },
   // Casais novos da pesquisa 2026
   { ship:"TungpangJessie", a:"Tungpang Pattarawadee Laosa", b:"Jessie Natsiya Prommart",
     series:[{id:"hc", t:"Heart Code", y:"2026", rating:"8.5"}] },
@@ -321,8 +321,9 @@ function seriesRowHTML(se){
 function shipBlock(s, series){
   const block = document.createElement('div');
   block.className = 'ship';
+  const pairInner = s.b ? `${s.a} <span class="link">&#8760;</span> ${s.b}` : s.a;
   let html = `<div class="ship-name">${s.ship}</div>
-    <div class="pair">${s.a} <span class="link">&#8760;</span> ${s.b}</div>`;
+    <div class="pair">${pairInner}</div>`;
   series.forEach(se => { html += seriesRowHTML(se); });
   block.innerHTML = html;
   return block;
