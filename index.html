@@ -56,12 +56,13 @@
   .track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
   .bar{height:100%;width:0;background:var(--amber);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
 
-  /* Section */
+  /* Section (ano) */
   .section-label{
     display:flex;align-items:center;gap:12px;
-    font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--faint);margin:34px 0 16px;
+    font-size:12px;font-weight:700;letter-spacing:.12em;
+    color:var(--amber);margin:34px 0 16px;font-variant-numeric:tabular-nums;
   }
+  .section-label.soon{color:var(--faint);letter-spacing:.2em;text-transform:uppercase;font-size:11px}
   .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
 
   /* Ship block */
@@ -105,7 +106,7 @@
   .tag.rating{color:var(--amber);border-color:var(--amber-dim)}
   .tag.pioneer{color:var(--muted)}
   .tag.soon{color:var(--amber);border-color:var(--amber-dim);border-style:dashed}
-  .tag.uncut{color:var(--bg);background:var(--amber);border-color:var(--amber);font-weight:700}
+  .tag.airing{color:var(--amber);border-color:var(--amber)}
 
   /* Checked state */
   .series.done .box{background:var(--amber);border-color:var(--amber)}
@@ -143,102 +144,153 @@
 
 </div>
 <script>
+// Lista plana de ships. A organização por ano é montada no render().
 const DATA = [
-  { group:"Da nossa conversa", ships:[
-    { ship:"LenaMiu", a:"Lena Lorena Schuett", b:"Miu Natsha Taechamongkalapiwat",
-      series:[
-        {id:"msz", t:"My Safe Zone", y:"2025", rating:"7.9"},
-        {id:"pls", t:"Pls.Love", tag:"em breve"}
-      ] },
-    { ship:"GinJay", a:"Ginny Natnicha Pratipnatsiri", b:"Jayna Angelina Stevens",
-      series:[
-        {id:"pl", t:"Poisonous Love", y:"2025", rating:"8.3"},
-        {id:"lun", t:"Lunar Secret", tag:"em breve"}
-      ] },
-    { ship:"JanJingJing", a:"Jan Ployshompoo Supasap", b:"JingJing Prariyapit Yu",
-      series:[
-        {id:"ewb", t:"Enemies with Benefits", y:"2026", rating:"8.6"},
-        {id:"mtl", t:"MuTeLuv: \u201CHello, Is This Luck?\u201D", y:"2025", rating:"7.6", tag:"coletânea"}
-      ] },
-    { ship:"TKNur", a:"Tangkwa Phinyanech Aungsuwan", b:"Nur Desoraya Techapaibul",
-      series:[{id:"dq", t:"Dangerous Queen", y:"2025", rating:"7.7"}] },
-    { ship:"FreenBecky", a:"Freen Sarocha Chankimha", b:"Becky Rebecca Patricia Armstrong",
-      series:[
-        {id:"gap", t:"GAP", y:"2022", rating:"7.7", pioneer:"a pioneira"},
-        {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4", uncut:true},
-        {id:"ura", t:"Uranus2324", y:"2024", rating:"7.7", tag:"filme"},
-        {id:"air", t:"The Air", y:"2026", rating:"8.3", tag:"elementos"},
-        {id:"cra", t:"Cranium", tag:"em breve"}
-      ] },
-    { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
-      series:[
-        {id:"pet", t:"Petrichor", y:"2024", rating:"8.3", uncut:"18+"},
-        {id:"wat", t:"The Water", y:"2026", rating:"8.3", tag:"elementos"},
-        {id:"unl", t:"Unlimited Love", y:"2025", rating:"6.9"},
-        {id:"sml", t:"Show Me Love", y:"2023", rating:"6.7", tag:"coletânea"}
-      ] },
-    { ship:"NamFilm", a:"Namtan Tipnaree Weerawatnodom", b:"Film Rachanun Mahawan",
-      series:[{id:"plu", t:"Pluto", y:"2024", rating:"8.5"}] },
-    { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
-      series:[
-        {id:"aff", t:"Affair", y:"2024", rating:"8.2", uncut:true},
-        {id:"hs", t:"Harmony Secret", y:"2025", rating:"8.2"},
-        {id:"hr", t:"Hometown Romance", y:"2026", rating:"8.5"}
-      ] },
-  ]},
-  { group:"Aclamadas · pra conhecer", ships:[
-    { ship:"LingOrm", a:"Lingling Sirilak Kwong", b:"Orm Kornnaphat Sethratanapong",
-      series:[{id:"sou", t:"The Secret of Us", y:"2024", rating:"8.1"}] },
-    { ship:"MilkLove", a:"Milk Pansa Vosbein", b:"Love Pattranite Limpatiyakorn",
-      series:[
-        {id:"235", t:"23.5", y:"2024", rating:"7.7"},
-        {id:"whl", t:"Whale Store xoxo", y:"2025", rating:"8.1"},
-        {id:"moz", t:"Magic of Zero", y:"2022", rating:"7.2"}
-      ] },
-    { ship:"Christine \u0026 Mae", a:"Christine Gulasatree Michalsky", b:"Mae Methakarn Anektanasuwan",
-      series:[{id:"r4u", t:"Reverse 4 You", y:"2024", rating:"7.7"}] },
-  ]},
-  { group:"Descobertas depois", ships:[
-    { ship:"Pundao \u0026 Shelly", a:"Aom Pundao Panyabaramee", b:"Shelly Phetsai Chanrueang",
-      series:[
-        {id:"rc", t:"Roller Coaster", y:"2025", rating:"8.2"},
-        {id:"bys", t:"By Your Side", tag:"em breve"}
-      ] },
-    { ship:"EmiBonnie", a:"Emi Thasorn Klinnium", b:"Bonnie Pattraphus Borattasuwan",
-      series:[
-        {id:"us", t:"Us", y:"2025", rating:"8.4", uncut:true},
-        {id:"moon", t:"Moonshadow", tag:"em breve"}
-      ] },
-    { ship:"FayeYoko", a:"Faye Peraya Malisorn", b:"Yoko Apasra Lertprasert",
-      series:[
-        {id:"blk", t:"Blank: The Series", y:"2023", tag:"maduras"},
-        {id:"blk2", t:"Blank Season 2", y:"2024", rating:"8.1"}
-      ] },
-    { ship:"JaneNano", a:"Puyfai Tharathip Baisaeng", b:"Ploy Jhutamas Pakonworrawong",
-      series:[
-        {id:"shd", t:"Shades", y:"2026", rating:"8.5", tag:"18+"},
-        {id:"shd2", t:"Shades Part 2", y:"2026", tag:"18+"}
-      ] },
-    { ship:"BamOom", a:"Bam Saralee Prasitdumrong", b:"Oom Eisaya Hosuwan",
-      series:[{id:"ful", t:"Fulfill", y:"2026", rating:"7.8"}] },
-    { ship:"FayMay", a:"Fay Kunyaphat Na Nakorn", b:"May Yada Watcharamusik",
-      series:[{id:"ssh", t:"Somewhere Somehow", y:"2025", rating:"8.3"}] },
-    { ship:"KaoJane", a:"Kao Supassrathip Akkrathaweepatch", b:"Jane Methika Jiranorraphat",
-      series:[
-        {id:"ld", t:"Love Design", y:"2025", rating:"8.4", uncut:true},
-        {id:"lds", t:"Love Design: Special", y:"2025", rating:"8.3", tag:"especial"}
-      ] },
-    { ship:"AyaMie", a:"Aya Orapan Phongmaykin", b:"Mie Phattaranan Padpai",
-      series:[{id:"lbd", t:"Love Beyond Dreams", y:"2026", rating:"8.5"}] },
-    { ship:"FayeAtom", a:"Faye Peraya Malisorn", b:"Atom Pariya Piyapanopas",
-      series:[{id:"bol", t:"Broken of Love", y:"2026", rating:"8.0"}] },
-  ]},
-  { group:"Club Friday · arcos sáficos", ships:[
-    { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
-      series:[{id:"cfb2", t:"Hot Love Issue: Love Bully", y:"2024", rating:"7.4", tag:"4 eps"}] },
-    { ship:"Nana \u0026 Tye", a:"Nana Sawanya Paisarnpayak", b:"Tye Chutima Teepanat",
-      series:[{id:"cfm", t:"Theory of Love: Merit Wins the Soul", y:"2025", rating:"6.8", tag:"4 eps"}] },
-  ]},
+  { ship:"LenaMiu", a:"Lena Lorena Schuett", b:"Miu Natsha Taechamongkalapiwat",
+    series:[
+      {id:"msz", t:"My Safe Zone", y:"2025", rating:"7.9"},
+      {id:"pls", t:"Pls.Love", tag:"em breve"}
+    ] },
+  { ship:"GinJay", a:"Ginny Natnicha Pratipnatsiri", b:"Jayna Angelina Stevens",
+    series:[
+      {id:"pl", t:"Poisonous Love", y:"2025", rating:"8.3"},
+      {id:"lun", t:"Lunar Secret", tag:"em breve"}
+    ] },
+  { ship:"JanJingJing", a:"Jan Ployshompoo Supasap", b:"JingJing Prariyapit Yu",
+    series:[
+      {id:"ewb", t:"Enemies with Benefits", y:"2026", rating:"8.6"},
+      {id:"mtl", t:"MuTeLuv: “Hello, Is This Luck?”", y:"2025", rating:"7.6", tag:"coletânea"}
+    ] },
+  { ship:"TKNur", a:"Tangkwa Phinyanech Aungsuwan", b:"Nur Desoraya Techapaibul",
+    series:[
+      {id:"dq", t:"Dangerous Queen", y:"2025", rating:"7.7"},
+      {id:"dqs", t:"Dangerous Queen: Special", y:"2026", tag:"especial"}
+    ] },
+  { ship:"FreenBecky", a:"Freen Sarocha Chankimha", b:"Becky Rebecca Patricia Armstrong",
+    series:[
+      {id:"gap", t:"GAP", y:"2022", rating:"7.7", pioneer:"a pioneira"},
+      {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4"},
+      {id:"ura", t:"Uranus2324", y:"2024", rating:"7.7", tag:"filme"},
+      {id:"air", t:"The Air", y:"2026", rating:"8.3", tag:"elementos"},
+      {id:"cra", t:"Cranium", tag:"em breve"}
+    ] },
+  { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
+    series:[
+      {id:"pet", t:"Petrichor", y:"2024", rating:"8.3"},
+      {id:"petu", t:"Petrichor: Uncut", y:"2024", rating:"8.1", tag:"18+"},
+      {id:"wat", t:"The Water", y:"2026", rating:"8.3", tag:"elementos"},
+      {id:"unl", t:"Unlimited Love", y:"2025", rating:"6.9"},
+      {id:"sml", t:"Show Me Love", y:"2023", rating:"6.7", tag:"club friday"},
+      {id:"cfb2", t:"Hot Love Issue: Love Bully", y:"2024", rating:"7.4", tag:"club friday"}
+    ] },
+  { ship:"NamFilm", a:"Namtan Tipnaree Weerawatnodom", b:"Film Rachanun Mahawan",
+    series:[
+      {id:"plu", t:"Pluto", y:"2024", rating:"8.5"},
+      {id:"grnf", t:"Girl Rules", y:"2026", rating:"7.8", tag:"multi-casal"},
+      {id:"her", t:"Her", tag:"em breve"}
+    ] },
+  { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
+    series:[
+      {id:"aff", t:"Affair", y:"2024", rating:"8.2"},
+      {id:"hs", t:"Harmony Secret", y:"2025", rating:"8.2"},
+      {id:"hr", t:"Hometown Romance", y:"2026", rating:"8.5"}
+    ] },
+  { ship:"LingOrm", a:"Lingling Sirilak Kwong", b:"Orm Kornnaphat Sethratanapong",
+    series:[
+      {id:"sou", t:"The Secret of Us", y:"2024", rating:"8.1"},
+      {id:"oy", t:"Only You", y:"2025", rating:"6.7"},
+      {id:"ilf", t:"In Love Forever", y:"2026", tag:"no ar"}
+    ] },
+  { ship:"ClaireBell", a:"Mable Siriwalee Siriwibool", b:"Pangjie Paphawarin Sawasdiwech",
+    series:[
+      {id:"cb", t:"ClaireBell", y:"2025", rating:"8.6"},
+      {id:"cbf", t:"ClaireBell: After the Final Scene", y:"2026", rating:"7.4", tag:"especial"}
+    ] },
+  { ship:"MilkLove", a:"Milk Pansa Vosbein", b:"Love Pattranite Limpatiyakorn",
+    series:[
+      {id:"235", t:"23.5", y:"2024", rating:"7.7"},
+      {id:"whl", t:"Whale Store xoxo", y:"2025", rating:"8.1"},
+      {id:"moz", t:"Magic of Zero", y:"2022", rating:"7.2"},
+      {id:"grml", t:"Girl Rules", y:"2026", rating:"7.8", tag:"multi-casal"},
+      {id:"dit", t:"Ditto", tag:"em breve"}
+    ] },
+  { ship:"Christine & Mae", a:"Christine Gulasatree Michalsky", b:"Mae Methakarn Anektanasuwan",
+    series:[{id:"r4u", t:"Reverse 4 You", y:"2024", rating:"7.7"}] },
+  { ship:"Pundao & Shelly", a:"Aom Pundao Panyabaramee", b:"Shelly Phetsai Chanrueang",
+    series:[
+      {id:"rc", t:"Roller Coaster", y:"2025", rating:"8.2"},
+      {id:"bys", t:"By Your Side", tag:"em breve"}
+    ] },
+  { ship:"EmiBonnie", a:"Emi Thasorn Klinnium", b:"Bonnie Pattraphus Borattasuwan",
+    series:[
+      {id:"us", t:"Us", y:"2025", rating:"8.4"},
+      {id:"moon", t:"Moonshadow", tag:"em breve"}
+    ] },
+  { ship:"FayeYoko", a:"Faye Peraya Malisorn", b:"Yoko Apasra Lertprasert",
+    series:[
+      {id:"blk", t:"Blank: The Series", y:"2023", tag:"maduras"},
+      {id:"blk2", t:"Blank Season 2", y:"2024", rating:"8.1"}
+    ] },
+  { ship:"FayeAtom", a:"Faye Peraya Malisorn", b:"Atom Pariya Piyapanopas",
+    series:[{id:"bol", t:"Broken of Love", y:"2026", rating:"8.0"}] },
+  { ship:"JaneNano", a:"Puyfai Tharathip Baisaeng", b:"Ploy Jhutamas Pakonworrawong",
+    series:[
+      {id:"shd", t:"Shades", y:"2026", rating:"8.5", tag:"18+"},
+      {id:"shd2", t:"Shades Part 2", y:"2027", tag:"18+"}
+    ] },
+  { ship:"BamOom", a:"Bam Saralee Prasitdumrong", b:"Oom Eisaya Hosuwan",
+    series:[{id:"ful", t:"Fulfill", y:"2026", rating:"7.8"}] },
+  { ship:"NileNamwan", a:"Nile Chanidapa Sommitthanakul", b:"Namwan Natchaya Vongbut",
+    series:[{id:"chl", t:"Chasing Love", y:"2026", tag:"no ar"}] },
+  // Casais novos da pesquisa 2026
+  { ship:"TungpangJessie", a:"Tungpang Pattarawadee Laosa", b:"Jessie Natsiya Prommart",
+    series:[{id:"hc", t:"Heart Code", y:"2026", rating:"8.5"}] },
+  { ship:"LilyBelle", a:"Lilly Ladapa Thongkham", b:"Belle Jiratchaya Kittavornsakul",
+    series:[{id:"sup", t:"I Wanna Be Sup'tar", y:"2026", rating:"7.7"}] },
+  { ship:"BaiporBamBam", a:"Baipor Thitiya Jirapornsilp", b:"BamBam Niwirin Limkangwalmongkol",
+    series:[{id:"bma", t:"Be My Angel", y:"2026", rating:"7.2"}] },
+  { ship:"NattyYeepun", a:"Natty Natthamon Jantraviphart", b:"Yeepun Purichaya Saranark",
+    series:[{id:"fv", t:"Frozen Valentine", y:"2026", rating:"7.1"}] },
+  { ship:"ThongfahPrigkhing", a:"Thongfah Alicha Sripratak", b:"Prigkhing Sureeyares Yakares",
+    series:[{id:"lap", t:"Like a Palette", y:"2025", rating:"7.3"}] },
+  { ship:"AppleMim", a:"Apple Lapisara Intarasut", b:"Mim Panthita Jencharoentham",
+    series:[{id:"earth", t:"The Earth", y:"2026", rating:"7.0", tag:"elementos"}] },
+  { ship:"NamneungNoey", a:"Namneung Milin Dokthian", b:"Noey Kanteera Wadcharathadsanakul",
+    series:[{id:"fire", t:"The Fire", y:"2026", tag:"elementos"}] },
+  { ship:"OrmFolk", a:"Ormsin Supitcha Limsommut", b:"Folk Sutima Korkiatvanich",
+    series:[{id:"mlb", t:"My Lady's Bodyguard", y:"2026", rating:"7.3", tag:"no ar"}] },
+  { ship:"ViewMim", a:"View Benyapa Jeenprasom", b:"Mim Rattanawadee Wongthong",
+    series:[{id:"blf", t:"Bake Love Feeling", tag:"em breve"}] },
+  { ship:"JuneMewnich", a:"June Wanwimol Jaenasavamethee", b:"Mewnich Nannaphas Loetnamchoetsakun",
+    series:[{id:"le", t:"Love’s Echoes", tag:"em breve"}] },
+  { ship:"WaiTonn", a:"Waifha Chanitsiri Ratananimit", b:"Tonnkhaw Nonthakarn Kaewobchoey",
+    series:[{id:"oxy", t:"Oxytocin", tag:"em breve"}] },
+  { ship:"PahnFond", a:"Pahn Pathitta Pornchumroenrut", b:"Fond Natticha Chantaravareelekha",
+    series:[{id:"wus", t:"Wish Upon a Star", tag:"em breve"}] },
+  { ship:"ClaudinePraew", a:"Claudine Atitaya Craig", b:"Praew Narupornkamol Chaisang",
+    series:[{id:"dyk", t:"Did You Know?", tag:"em breve"}] },
+  { ship:"EnjoyJune", a:"Enjoy Thidarat Puerthong", b:"June Nannirin Varokornwatcharakool",
+    series:[{id:"loh", t:"Love on Hire", tag:"em breve"}] },
+  { ship:"AndaLookkaew", a:"Anda Ananta Teavirat", b:"Lookkaew Kamollak Sangsubsin",
+    series:[{id:"rem", t:"Remain", tag:"em breve"}] },
+  { ship:"PimPineare", a:"Pim Pimjira Jaroenlak", b:"Pineare Pannin Charnmanoon",
+    series:[{id:"bil", t:"Built in Love", tag:"em breve"}] },
+  { ship:"FrameMookda", a:"Wonderframe Supakchaya", b:"Mookda Narinrak",
+    series:[{id:"tdh", t:"The Dragon House", tag:"em breve"}] },
+  { ship:"MookShu", a:"Mook Worranit Thawornwong", b:"Shu Nunnicha Saehuang",
+    series:[{id:"shms", t:"Shades", y:"2026", rating:"8.5", tag:"multi-casal"}] },
+  // Ships adicionados pela parisethais direto no GitHub (preservados no merge)
+  { ship:"FayMay", a:"Fay Kunyaphat Na Nakorn", b:"May Yada Watcharamusik",
+    series:[{id:"ssh", t:"Somewhere Somehow", y:"2025", rating:"8.3"}] },
+  { ship:"KaoJane", a:"Kao Supassrathip Akkrathaweepatch", b:"Jane Methika Jiranorraphat",
+    series:[
+      {id:"ld", t:"Love Design", y:"2025", rating:"8.4"},
+      {id:"lds", t:"Love Design: Special", y:"2025", rating:"8.3"}
+    ] },
+  { ship:"AyaMie", a:"Aya Orapan Phongmaykin", b:"Mie Phattaranan Padpai",
+    series:[{id:"lbd", t:"Love Beyond Dreams", y:"2026", rating:"8.5"}] },
+  { ship:"Nana & Tye", a:"Nana Sawanya Paisarnpayak", b:"Tye Chutima Teepanat",
+    series:[{id:"cfm", t:"Theory of Love: Merit Wins the Soul", y:"2025", rating:"6.8", tag:"club friday"}] },
 ];
 
 const KEY = "gl_watchlist_v1";
@@ -246,42 +298,74 @@ let state = {};
 
 const CHECK = '<svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"></polyline></svg>';
 
+function seriesRowHTML(se){
+  const done = !!state[se.id];
+  let tags = '';
+  if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
+  if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
+  if(se.tag){
+    let cls = '';
+    if(se.tag==='em breve') cls=' soon';
+    else if(se.tag==='no ar') cls=' airing';
+    tags += `<span class="tag${cls}">${se.tag}</span>`;
+  }
+  return `<div class="series${done?' done':''}" data-id="${se.id}" role="button" tabindex="0" aria-pressed="${done}">
+      <div class="box">${CHECK}</div>
+      <div class="series-body">
+        <div class="series-title">${se.t}</div>
+        <div class="series-meta">${tags}</div>
+      </div>
+    </div>`;
+}
+
+function shipBlock(s, series){
+  const block = document.createElement('div');
+  block.className = 'ship';
+  let html = `<div class="ship-name">${s.ship}</div>
+    <div class="pair">${s.a} <span class="link">&#8760;</span> ${s.b}</div>`;
+  series.forEach(se => { html += seriesRowHTML(se); });
+  block.innerHTML = html;
+  return block;
+}
+
+function sectionLabel(text, soon){
+  const lbl = document.createElement('div');
+  lbl.className = 'section-label' + (soon ? ' soon' : '');
+  lbl.textContent = text;
+  return lbl;
+}
+
 function render(){
   const list = document.getElementById('list');
   list.innerHTML = '';
   let total = 0;
-  DATA.forEach(section => {
-    const lbl = document.createElement('div');
-    lbl.className = 'section-label';
-    lbl.textContent = section.group;
-    list.appendChild(lbl);
 
-    section.ships.forEach(s => {
-      const block = document.createElement('div');
-      block.className = 'ship';
-      let html = `<div class="ship-name">${s.ship}</div>
-        <div class="pair">${s.a} <span class="link">&#8760;</span> ${s.b}</div>`;
-      s.series.forEach(se => {
-        total++;
-        const done = !!state[se.id];
-        let tags = '';
-        if(se.y) tags += `<span class="year">${se.y}</span>`;
-        if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
-        if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
-        if(se.tag) tags += `<span class="tag${se.tag==='em breve'?' soon':''}">${se.tag}</span>`;
-        if(se.uncut) tags += `<span class="tag uncut">tem uncut${se.uncut===true?'':' · '+se.uncut}</span>`;
-        html += `<div class="series${done?' done':''}" data-id="${se.id}" role="button" tabindex="0" aria-pressed="${done}">
-            <div class="box">${CHECK}</div>
-            <div class="series-body">
-              <div class="series-title">${se.t}</div>
-              <div class="series-meta">${tags}</div>
-            </div>
-          </div>`;
-      });
-      block.innerHTML = html;
-      list.appendChild(block);
+  // Agrupa por ano: ano -> [{ship, series[]}]. Séries sem ano vão pra "Em breve".
+  const byYear = {};
+  const soon = [];
+  DATA.forEach(s => {
+    const perYear = {};
+    const noYear = [];
+    s.series.forEach(se => {
+      total++;
+      if(se.y){ (perYear[se.y] = perYear[se.y] || []).push(se); }
+      else { noYear.push(se); }
     });
+    Object.keys(perYear).forEach(y => {
+      (byYear[y] = byYear[y] || []).push({ ship:s, series:perYear[y] });
+    });
+    if(noYear.length) soon.push({ ship:s, series:noYear });
   });
+
+  Object.keys(byYear).sort((a,b) => b - a).forEach(y => {
+    list.appendChild(sectionLabel(y));
+    byYear[y].forEach(e => list.appendChild(shipBlock(e.ship, e.series)));
+  });
+  if(soon.length){
+    list.appendChild(sectionLabel('Em breve', true));
+    soon.forEach(e => list.appendChild(shipBlock(e.ship, e.series)));
+  }
+
   document.getElementById('total').textContent = total;
   updateProgress(total);
 
