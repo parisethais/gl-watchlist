@@ -254,7 +254,7 @@ const DATA = [
   { ship:"Shades", a:"MookShu · JaneNano",
     series:[
       {id:"shd", t:"Shades", y:"2026", rating:"8.5", tag:"18+"},
-      {id:"shd2", t:"Shades Part 2", y:"2027", tag:"18+"}
+      {id:"shd2", t:"Shades Part 2", tag:"18+", when:"2027"}
     ] },
   { ship:"BamOom", a:"Bam Saralee Prasitdumrong", b:"Oom Eisaya Hosuwan",
     series:[{id:"ful", t:"Fulfill", y:"2026", rating:"7.8"}] },
@@ -296,7 +296,7 @@ const DATA = [
   { ship:"PimPineare", a:"Pim Pimjira Jaroenlak", b:"Pineare Pannin Charnmanoon",
     series:[{id:"bil", t:"Built in Love", tag:"em breve", when:"2026"}] },
   { ship:"FrameMookda", a:"Wonderframe Supakchaya", b:"Mookda Narinrak",
-    series:[{id:"tdh", t:"The Dragon House", y:"2026"}] },
+    series:[{id:"tdh", t:"The Dragon House", tag:"em breve", when:"2026"}] },
   // Ships adicionados pela parisethais direto no GitHub (preservados no merge)
   { ship:"FayMay", a:"Fay Kunyaphat Na Nakorn", b:"May Yada Watcharamusik",
     series:[{id:"ssh", t:"Somewhere Somehow", y:"2025", rating:"8.3"}] },
@@ -326,11 +326,10 @@ function seriesRowHTML(se){
   let tags = '';
   if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
   if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
+  if(se.when) tags += `<span class="tag when">${se.when}</span>`;
   if(se.tag){
     if(se.tag==='em breve'){
-      tags += se.when
-        ? `<span class="tag when">${se.when}</span>`
-        : `<span class="tag soon">em breve</span>`;
+      if(!se.when) tags += `<span class="tag soon">em breve</span>`;
     } else if(se.tag==='no ar'){
       tags += `<span class="tag airing">no ar</span>`;
     } else {
@@ -382,9 +381,9 @@ function render(){
   });
 
   const years = Object.keys(byYear).sort((a,b) => b - a);
-  const tabKeys = years.concat(soon.length ? ['Em breve'] : []);
+  const tabKeys = (soon.length ? ['Em breve'] : []).concat(years);
   if(!activeTab || tabKeys.indexOf(activeTab) === -1){
-    activeTab = tabKeys.indexOf('2026') !== -1 ? '2026' : tabKeys[0];
+    activeTab = tabKeys[0];
   }
 
   const countFor = key => key === 'Em breve'
