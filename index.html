@@ -56,14 +56,32 @@
   .track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
   .bar{height:100%;width:0;background:var(--amber);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
 
-  /* Section (ano) */
-  .section-label{
-    display:flex;align-items:center;gap:12px;
-    font-size:12px;font-weight:700;letter-spacing:.12em;
-    color:var(--amber);margin:34px 0 16px;font-variant-numeric:tabular-nums;
+  /* Abas de ano (fixas no topo, roláveis) */
+  .tabs{
+    position:sticky;top:0;z-index:5;
+    display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    background:var(--bg);padding:12px 0 14px;margin:0 0 6px;
+    scrollbar-width:none;
   }
-  .section-label.soon{color:var(--faint);letter-spacing:.2em;text-transform:uppercase;font-size:11px}
-  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:none;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;gap:7px;white-space:nowrap;
+    font-size:13.5px;font-weight:600;color:var(--muted);
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:99px;padding:8px 13px;
+    font-variant-numeric:tabular-nums;
+    transition:background .18s,color .18s,border-color .18s;
+  }
+  .tab.soon{text-transform:uppercase;letter-spacing:.06em;font-size:11.5px}
+  .tab .tab-n{
+    font-size:11px;font-weight:600;color:var(--faint);
+    background:var(--bg);border-radius:99px;padding:1px 7px;min-width:20px;text-align:center;
+  }
+  .tab.active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+  .tab.active .tab-n{color:var(--amber);background:var(--bg)}
+  .panel{animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
   /* Ship block */
   .ship{
@@ -327,12 +345,7 @@ function shipBlock(s, series){
   return block;
 }
 
-function sectionLabel(text, soon){
-  const lbl = document.createElement('div');
-  lbl.className = 'section-label' + (soon ? ' soon' : '');
-  lbl.textContent = text;
-  return lbl;
-}
+let activeTab = null;
 
 function render(){
   const list = document.getElementById('list');
@@ -356,14 +369,49 @@ function render(){
     if(noYear.length) soon.push({ ship:s, series:noYear });
   });
 
-  Object.keys(byYear).sort((a,b) => b - a).forEach(y => {
-    list.appendChild(sectionLabel(y));
-    byYear[y].forEach(e => list.appendChild(shipBlock(e.ship, e.series)));
-  });
-  if(soon.length){
-    list.appendChild(sectionLabel('Em breve', true));
-    soon.forEach(e => list.appendChild(shipBlock(e.ship, e.series)));
+  const years = Object.keys(byYear).sort((a,b) => b - a);
+  const tabKeys = years.concat(soon.length ? ['Em breve'] : []);
+  if(!activeTab || tabKeys.indexOf(activeTab) === -1){
+    activeTab = tabKeys.indexOf('2026') !== -1 ? '2026' : tabKeys[0];
   }
+
+  const countFor = key => key === 'Em breve'
+    ? soon.reduce((n,e)=>n+e.series.length,0)
+    : byYear[key].reduce((n,e)=>n+e.series.length,0);
+
+  // Barra de abas (fixa no topo, rolável na horizontal)
+  const tabBar = document.createElement('div');
+  tabBar.className = 'tabs';
+  const panels = document.createElement('div');
+
+  tabKeys.forEach(key => {
+    const tab = document.createElement('button');
+    tab.className = 'tab' + (key === 'Em breve' ? ' soon' : '');
+    tab.dataset.key = key;
+    tab.innerHTML = `${key}<span class="tab-n">${countFor(key)}</span>`;
+    tab.addEventListener('click', () => { activeTab = key; showActive(); });
+    tabBar.appendChild(tab);
+
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    panel.dataset.key = key;
+    const entries = key === 'Em breve' ? soon : byYear[key];
+    entries.forEach(e => panel.appendChild(shipBlock(e.ship, e.series)));
+    panels.appendChild(panel);
+  });
+
+  list.appendChild(tabBar);
+  list.appendChild(panels);
+
+  function showActive(){
+    tabBar.querySelectorAll('.tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.key === activeTab));
+    panels.querySelectorAll('.panel').forEach(p =>
+      p.style.display = p.dataset.key === activeTab ? '' : 'none');
+    const at = tabBar.querySelector('.tab.active');
+    if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+  }
+  showActive();
 
   document.getElementById('total').textContent = total;
   updateProgress(total);
