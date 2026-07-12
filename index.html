@@ -136,6 +136,34 @@
   footer{margin-top:34px;color:var(--faint);font-size:11.5px;line-height:1.6;text-align:center}
   footer .dot{color:var(--amber-dim)}
 
+  /* Busca */
+  .search-wrap{position:relative;margin:0 0 4px}
+  .search-ic{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    width:17px;height:17px;stroke:var(--faint);stroke-width:2;fill:none;
+    stroke-linecap:round;pointer-events:none;
+  }
+  #search{
+    width:100%;font-family:inherit;font-size:15px;color:var(--text);
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:12px 40px 12px 40px;outline:none;-webkit-appearance:none;
+    transition:border-color .18s;
+  }
+  #search::placeholder{color:var(--faint)}
+  #search:focus{border-color:var(--amber-dim)}
+  #search::-webkit-search-cancel-button{-webkit-appearance:none}
+  #search-clear{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    display:none;cursor:pointer;font-family:inherit;
+    width:28px;height:28px;line-height:1;font-size:20px;
+    color:var(--muted);background:none;border:none;border-radius:8px;
+  }
+  .search-wrap.has-q #search-clear{display:block}
+  .results-head{
+    font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--muted);margin:14px 0 16px;
+  }
+
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -154,6 +182,12 @@
       <span class="progress-pct" id="pct">0%</span>
     </div>
     <div class="track"><div class="bar" id="bar"></div></div>
+  </div>
+
+  <div class="search-wrap">
+    <svg class="search-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+    <input id="search" type="search" inputmode="search" autocomplete="off" placeholder="Buscar série, ship ou atriz…">
+    <button id="search-clear" type="button" aria-label="Limpar busca">&times;</button>
   </div>
 
   <div id="list"></div>
@@ -321,9 +355,14 @@ let state = {};
 
 const CHECK = '<svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"></polyline></svg>';
 
-function seriesRowHTML(se){
+function normalize(s){
+  return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+}
+
+function seriesRowHTML(se, showYear){
   const done = !!state[se.id];
   let tags = '';
+  if(showYear && se.y) tags += `<span class="year">${se.y}</span>`;
   if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
   if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
   if(se.when) tags += `<span class="tag when">${se.when}</span>`;
@@ -345,23 +384,65 @@ function seriesRowHTML(se){
     </div>`;
 }
 
-function shipBlock(s, series){
+function shipBlock(s, series, showYear){
   const block = document.createElement('div');
   block.className = 'ship';
   const pairInner = s.b ? `${s.a} <span class="link">&#8760;</span> ${s.b}` : s.a;
   let html = `<div class="ship-name">${s.ship}</div>
     <div class="pair">${pairInner}</div>`;
-  series.forEach(se => { html += seriesRowHTML(se); });
+  series.forEach(se => { html += seriesRowHTML(se, showYear); });
   block.innerHTML = html;
   return block;
+}
+
+function wireSeries(){
+  document.querySelectorAll('.series').forEach(el=>{
+    el.addEventListener('click', ()=>toggle(el));
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(el);}
+    });
+  });
 }
 
 let activeTab = null;
 
 function render(){
+  const total = DATA.reduce((n,s)=>n+s.series.length,0);
+  document.getElementById('total').textContent = total;
+  updateProgress(total);
+
+  const q = (document.getElementById('search').value || '').trim();
+  if(q) renderResults(q);
+  else renderTabs();
+
+  wireSeries();
+}
+
+function renderResults(q){
   const list = document.getElementById('list');
   list.innerHTML = '';
-  let total = 0;
+  const nq = normalize(q);
+  const results = [];
+  DATA.forEach(s => {
+    const shipHit = normalize(s.ship).includes(nq)
+      || normalize(s.a).includes(nq) || normalize(s.b).includes(nq);
+    const series = shipHit ? s.series : s.series.filter(se => normalize(se.t).includes(nq));
+    if(series.length) results.push({ ship:s, series });
+  });
+
+  const count = results.reduce((n,r)=>n+r.series.length,0);
+  const head = document.createElement('div');
+  head.className = 'results-head';
+  head.textContent = count
+    ? `${count} resultado${count>1?'s':''} para “${q}”`
+    : `Nada encontrado para “${q}”`;
+  list.appendChild(head);
+  results.forEach(r => list.appendChild(shipBlock(r.ship, r.series, true)));
+}
+
+function renderTabs(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
 
   // Agrupa por ano: ano -> [{ship, series[]}]. Séries sem ano vão pra "Em breve".
   const byYear = {};
@@ -370,7 +451,6 @@ function render(){
     const perYear = {};
     const noYear = [];
     s.series.forEach(se => {
-      total++;
       if(se.y){ (perYear[se.y] = perYear[se.y] || []).push(se); }
       else { noYear.push(se); }
     });
@@ -423,16 +503,6 @@ function render(){
     if(at) at.scrollIntoView({inline:'center', block:'nearest'});
   }
   showActive();
-
-  document.getElementById('total').textContent = total;
-  updateProgress(total);
-
-  document.querySelectorAll('.series').forEach(el=>{
-    el.addEventListener('click', ()=>toggle(el));
-    el.addEventListener('keydown', e=>{
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(el);}
-    });
-  });
 }
 
 function toggle(el){
@@ -467,6 +537,22 @@ async function save(){
     try { await window.storage.set(KEY, val); } catch(e){}
   }
 }
+function setupSearch(){
+  const input = document.getElementById('search');
+  const wrap = input.closest('.search-wrap');
+  const clear = document.getElementById('search-clear');
+  input.addEventListener('input', () => {
+    wrap.classList.toggle('has-q', input.value.trim() !== '');
+    render();
+  });
+  clear.addEventListener('click', () => {
+    input.value = '';
+    wrap.classList.remove('has-q');
+    render();
+    input.focus();
+  });
+}
+
 async function load(){
   if(backend === 'local'){
     try { const v = localStorage.getItem(KEY); if(v) state = JSON.parse(v); } catch(e){}
@@ -474,6 +560,7 @@ async function load(){
     try { const r = await window.storage.get(KEY); if(r && r.value) state = JSON.parse(r.value); }
     catch(e){}
   }
+  setupSearch();
   render();
 }
 
