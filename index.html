@@ -125,6 +125,8 @@
   .tag.pioneer{color:var(--muted)}
   .tag.soon{color:var(--amber);border-color:var(--amber-dim);border-style:dashed}
   .tag.airing{color:var(--amber);border-color:var(--amber)}
+  .tag.when{color:var(--amber);border-color:var(--amber-dim);border-style:dashed;font-variant-numeric:tabular-nums}
+  .tag.when::before{content:"◗ ";opacity:.7}
 
   /* Checked state */
   .series.done .box{background:var(--amber);border-color:var(--amber)}
@@ -167,12 +169,12 @@ const DATA = [
   { ship:"LenaMiu", a:"Lena Lorena Schuett", b:"Miu Natsha Taechamongkalapiwat",
     series:[
       {id:"msz", t:"My Safe Zone", y:"2025", rating:"7.9"},
-      {id:"pls", t:"Pls.Love", tag:"em breve"}
+      {id:"pls", t:"Pls.Love", tag:"em breve", when:"set 2026"}
     ] },
   { ship:"GinJay", a:"Ginny Natnicha Pratipnatsiri", b:"Jayna Angelina Stevens",
     series:[
       {id:"pl", t:"Poisonous Love", y:"2025", rating:"8.3"},
-      {id:"lun", t:"Lunar Secret", tag:"em breve"}
+      {id:"lun", t:"Lunar Secret", tag:"em breve", when:"a definir"}
     ] },
   { ship:"JanJingJing", a:"Jan Ployshompoo Supasap", b:"JingJing Prariyapit Yu",
     series:[
@@ -190,7 +192,7 @@ const DATA = [
       {id:"pin", t:"The Loyal Pin", y:"2024", rating:"8.4"},
       {id:"ura", t:"Uranus2324", y:"2024", rating:"7.7", tag:"filme"},
       {id:"air", t:"The Air", y:"2026", rating:"8.3", tag:"elementos"},
-      {id:"cra", t:"Cranium", tag:"em breve"}
+      {id:"cra", t:"Cranium", tag:"em breve", when:"a definir"}
     ] },
   { ship:"EngLot", a:"Engfa Waraha", b:"Charlotte Austin",
     series:[
@@ -204,7 +206,7 @@ const DATA = [
   { ship:"NamFilm", a:"Namtan Tipnaree Weerawatnodom", b:"Film Rachanun Mahawan",
     series:[
       {id:"plu", t:"Pluto", y:"2024", rating:"8.5"},
-      {id:"her", t:"Her", tag:"em breve"}
+      {id:"her", t:"Her", tag:"em breve", when:"2026"}
     ] },
   { ship:"LMSY", a:"Lookmhee Punyapat Wangpongsathaporn", b:"Sonya Saranphat Pedersen",
     series:[
@@ -228,19 +230,19 @@ const DATA = [
       {id:"235", t:"23.5", y:"2024", rating:"7.7"},
       {id:"whl", t:"Whale Store xoxo", y:"2025", rating:"8.1"},
       {id:"moz", t:"Magic of Zero", y:"2022", rating:"7.2"},
-      {id:"dit", t:"Ditto", tag:"em breve"}
+      {id:"dit", t:"Ditto", tag:"em breve", when:"2026"}
     ] },
   { ship:"Christine & Mae", a:"Christine Gulasatree Michalsky", b:"Mae Methakarn Anektanasuwan",
     series:[{id:"r4u", t:"Reverse 4 You", y:"2024", rating:"7.7"}] },
   { ship:"Pundao & Shelly", a:"Aom Pundao Panyabaramee", b:"Shelly Phetsai Chanrueang",
     series:[
       {id:"rc", t:"Roller Coaster", y:"2025", rating:"8.2"},
-      {id:"bys", t:"By Your Side", tag:"em breve"}
+      {id:"bys", t:"By Your Side", tag:"em breve", when:"2026"}
     ] },
   { ship:"EmiBonnie", a:"Emi Thasorn Klinnium", b:"Bonnie Pattraphus Borattasuwan",
     series:[
       {id:"us", t:"Us", y:"2025", rating:"8.4"},
-      {id:"moon", t:"Moonshadow", tag:"em breve"}
+      {id:"moon", t:"Moonshadow", tag:"em breve", when:"2026"}
     ] },
   { ship:"FayeYoko", a:"Faye Peraya Malisorn", b:"Yoko Apasra Lertprasert",
     series:[
@@ -278,23 +280,23 @@ const DATA = [
   { ship:"OrmFolk", a:"Ormsin Supitcha Limsommut", b:"Folk Sutima Korkiatvanich",
     series:[{id:"mlb", t:"My Lady's Bodyguard", y:"2026", rating:"7.3", tag:"no ar"}] },
   { ship:"ViewMim", a:"View Benyapa Jeenprasom", b:"Mim Rattanawadee Wongthong",
-    series:[{id:"blf", t:"Bake Love Feeling", tag:"em breve"}] },
+    series:[{id:"blf", t:"Bake Love Feeling", tag:"em breve", when:"2026"}] },
   { ship:"JuneMewnich", a:"June Wanwimol Jaenasavamethee", b:"Mewnich Nannaphas Loetnamchoetsakun",
-    series:[{id:"le", t:"Love’s Echoes", tag:"em breve"}] },
+    series:[{id:"le", t:"Love’s Echoes", tag:"em breve", when:"2026"}] },
   { ship:"WaiTonn", a:"Waifha Chanitsiri Ratananimit", b:"Tonnkhaw Nonthakarn Kaewobchoey",
-    series:[{id:"oxy", t:"Oxytocin", tag:"em breve"}] },
+    series:[{id:"oxy", t:"Oxytocin", tag:"em breve", when:"2026"}] },
   { ship:"PahnFond", a:"Pahn Pathitta Pornchumroenrut", b:"Fond Natticha Chantaravareelekha",
-    series:[{id:"wus", t:"Wish Upon a Star", tag:"em breve"}] },
+    series:[{id:"wus", t:"Wish Upon a Star", tag:"em breve", when:"2026"}] },
   { ship:"ClaudinePraew", a:"Claudine Atitaya Craig", b:"Praew Narupornkamol Chaisang",
-    series:[{id:"dyk", t:"Did You Know?", tag:"em breve"}] },
+    series:[{id:"dyk", t:"Did You Know?", tag:"em breve", when:"a definir"}] },
   { ship:"EnjoyJune", a:"Enjoy Thidarat Puerthong", b:"June Nannirin Varokornwatcharakool",
-    series:[{id:"loh", t:"Love on Hire", tag:"em breve"}] },
+    series:[{id:"loh", t:"Love on Hire", tag:"em breve", when:"2026"}] },
   { ship:"AndaLookkaew", a:"Anda Ananta Teavirat", b:"Lookkaew Kamollak Sangsubsin",
-    series:[{id:"rem", t:"Remain", tag:"em breve"}] },
+    series:[{id:"rem", t:"Remain", tag:"em breve", when:"Q1 2027"}] },
   { ship:"PimPineare", a:"Pim Pimjira Jaroenlak", b:"Pineare Pannin Charnmanoon",
-    series:[{id:"bil", t:"Built in Love", tag:"em breve"}] },
+    series:[{id:"bil", t:"Built in Love", tag:"em breve", when:"2026"}] },
   { ship:"FrameMookda", a:"Wonderframe Supakchaya", b:"Mookda Narinrak",
-    series:[{id:"tdh", t:"The Dragon House", tag:"em breve"}] },
+    series:[{id:"tdh", t:"The Dragon House", y:"2026"}] },
   // Ships adicionados pela parisethais direto no GitHub (preservados no merge)
   { ship:"FayMay", a:"Fay Kunyaphat Na Nakorn", b:"May Yada Watcharamusik",
     series:[{id:"ssh", t:"Somewhere Somehow", y:"2025", rating:"8.3"}] },
@@ -320,10 +322,15 @@ function seriesRowHTML(se){
   if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
   if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
   if(se.tag){
-    let cls = '';
-    if(se.tag==='em breve') cls=' soon';
-    else if(se.tag==='no ar') cls=' airing';
-    tags += `<span class="tag${cls}">${se.tag}</span>`;
+    if(se.tag==='em breve'){
+      tags += se.when
+        ? `<span class="tag when">${se.when}</span>`
+        : `<span class="tag soon">em breve</span>`;
+    } else if(se.tag==='no ar'){
+      tags += `<span class="tag airing">no ar</span>`;
+    } else {
+      tags += `<span class="tag">${se.tag}</span>`;
+    }
   }
   return `<div class="series${done?' done':''}" data-id="${se.id}" role="button" tabindex="0" aria-pressed="${done}">
       <div class="box">${CHECK}</div>
