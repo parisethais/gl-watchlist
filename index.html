@@ -127,6 +127,9 @@
   .tag.airing{color:var(--amber);border-color:var(--amber)}
   .tag.when{color:var(--amber);border-color:var(--amber-dim);border-style:dashed;font-variant-numeric:tabular-nums}
   .tag.when::before{content:"◗ ";opacity:.7}
+  .tag.heat{border-color:#7c3a2c;background:rgba(124,58,44,.14);padding:2px 6px;letter-spacing:1px}
+  .tab.hot.active{background:#d9542b;border-color:#d9542b;color:#fff}
+  .tab.hot.active .tab-n{color:#d9542b;background:#fff}
 
   /* Checked state */
   .series.done .box{background:var(--amber);border-color:var(--amber)}
@@ -355,6 +358,15 @@ let state = {};
 
 const CHECK = '<svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"></polyline></svg>';
 
+// Nível de "pimenta" por id (2 = 🌶️🌶️ picante, 3 = 🌶️🌶️🌶️ ousada).
+// Baseado em tags/reviews do MyDramaList (conteúdo sexual, maduras, 18+, versões uncut).
+const HEAT = {
+  petu:3, cb:3, shd:3, shd2:3,
+  cbf:2, blk:2, blk2:2, pet:2, aff:2, unl:2, sml:2, cfb2:2,
+  sou:2, msz:2, dq:2, hs:2, wat:2, oy:2, ewb:2, ful:2, uhr:2
+};
+function heatOf(se){ return HEAT[se.id] || 0; }
+
 function normalize(s){
   return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 }
@@ -364,6 +376,8 @@ function seriesRowHTML(se, showYear){
   let tags = '';
   if(showYear && se.y) tags += `<span class="year">${se.y}</span>`;
   if(se.rating) tags += `<span class="tag rating">&#9733; ${se.rating}</span>`;
+  const heat = heatOf(se);
+  if(heat) tags += `<span class="tag heat">${'🌶️'.repeat(heat)}</span>`;
   if(se.pioneer) tags += `<span class="tag pioneer">${se.pioneer}</span>`;
   if(se.when) tags += `<span class="tag when">${se.when}</span>`;
   if(se.tag){
@@ -445,8 +459,10 @@ function renderTabs(){
   list.innerHTML = '';
 
   // Agrupa por ano: ano -> [{ship, series[]}]. Séries sem ano vão pra "Em breve".
+  // Além disso, monta a aba 🌶️ com as mais ousadas (heat >= 2) de qualquer ano.
   const byYear = {};
   const soon = [];
+  const spicy = [];
   DATA.forEach(s => {
     const perYear = {};
     const noYear = [];
@@ -458,17 +474,23 @@ function renderTabs(){
       (byYear[y] = byYear[y] || []).push({ ship:s, series:perYear[y] });
     });
     if(noYear.length) soon.push({ ship:s, series:noYear });
+    const hot = s.series.filter(se => heatOf(se) >= 2);
+    if(hot.length) spicy.push({ ship:s, series:hot });
   });
 
   const years = Object.keys(byYear).sort((a,b) => b - a);
-  const tabKeys = (soon.length ? ['Em breve'] : []).concat(years);
+  const groups = { 'Em breve': soon, '🌶️': spicy };
+  years.forEach(y => { groups[y] = byYear[y]; });
+
+  const tabKeys = []
+    .concat(soon.length ? ['Em breve'] : [])
+    .concat(spicy.length ? ['🌶️'] : [])
+    .concat(years);
   if(!activeTab || tabKeys.indexOf(activeTab) === -1){
     activeTab = tabKeys[0];
   }
 
-  const countFor = key => key === 'Em breve'
-    ? soon.reduce((n,e)=>n+e.series.length,0)
-    : byYear[key].reduce((n,e)=>n+e.series.length,0);
+  const countFor = key => groups[key].reduce((n,e)=>n+e.series.length,0);
 
   // Barra de abas (fixa no topo, rolável na horizontal)
   const tabBar = document.createElement('div');
@@ -477,7 +499,9 @@ function renderTabs(){
 
   tabKeys.forEach(key => {
     const tab = document.createElement('button');
-    tab.className = 'tab' + (key === 'Em breve' ? ' soon' : '');
+    tab.className = 'tab'
+      + (key === 'Em breve' ? ' soon' : '')
+      + (key === '🌶️' ? ' hot' : '');
     tab.dataset.key = key;
     tab.innerHTML = `${key}<span class="tab-n">${countFor(key)}</span>`;
     tab.addEventListener('click', () => { activeTab = key; showActive(); });
@@ -486,8 +510,8 @@ function renderTabs(){
     const panel = document.createElement('div');
     panel.className = 'panel';
     panel.dataset.key = key;
-    const entries = key === 'Em breve' ? soon : byYear[key];
-    entries.forEach(e => panel.appendChild(shipBlock(e.ship, e.series)));
+    const showYear = key === '🌶️';
+    groups[key].forEach(e => panel.appendChild(shipBlock(e.ship, e.series, showYear)));
     panels.appendChild(panel);
   });
 
